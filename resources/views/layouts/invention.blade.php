@@ -13,48 +13,30 @@
   <div id="content">
     <div id="header">
       <div id="logo">
-        <h1>logo here</h1>
-        <h4>have your punchline here</h4>
+        <h1>UTN</h1>
+        <h4>Laboratorio de Computacion 4</h4>
       </div>
       <div id="links">
         <ul>
-          <li><a href="{{ url('/blog') }}">Blog</a></li>
-          <li><a href="{{ route('students.index') }}">Estudiantes</a></li>          
-          <li><a href="{{ action([App\Http\Controllers\CalculationController::class, 'showForm']) }}">Cálculo</a></li>
-          <li><a href="{{ url('/contacto') }}">Contacto</a></li>
+          <li><a href="{{ route('students.index') }}">Estudiantes</a></li>        
+          <li><a href="{{ route('professors.index') }}">Profesores</a></li>  
+          <li><a href="{{ route('students.index') }}">Materias</a></li>    
+          <li><a href="{{ route('students.index') }}">Cursos</a></li>  
+          <li><a href="{{ route('students.index') }}">Comisiones</a></li>  
         </ul>
       </div>
     </div>
     <div id="mainimg">
-      <h3>inventions</h3>
-      <h4>for a wireless world</h4>
+      <h3>Gestor Escolar</h3>
+      <h4>Proyecto CRUD</h4>
     </div>
     <div id="contentarea">
       <div id="leftbar">
         @yield('contenido')
       </div>
-      <div id="rightbar">
-        
-        <h2>latest news</h2>
-        <p>
-          <a href="javascript:history.back()"> Volver </a> <br>
-          <a href="{{ url()->previous() }}">Regresar</a>
-         </p>
-        <p><span class="orangetext">12/08/2006</span><br />
-          Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Utid anisl nec leo congue fringilla. <br />
-          <br />
-          <span class="orangetext">10/08/2006</span><br />
-          Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Utid anisl nec leo congue fringilla. <br />
-          <br />
-          <span class="orangetext">28/07/2006</span><br />
-          Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Utid anisl nec leo congue fringilla. </p>
-      </div>
     </div>
     <div id="bottom">
-      <div id="email"><a href="mailto:info@yourcompany.com">info@yourcompany.com</a></div>
-      <div id="validtext">
-        <p>Valid <a href="http://validator.w3.org/check?uri=referer">XHTML</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a></p>
-      </div>
+      
     </div>
   </div>
 </div>

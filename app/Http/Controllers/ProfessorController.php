@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Professor;
@@ -7,10 +6,19 @@ use Illuminate\Http\Request;
 
 class ProfessorController extends Controller
 {
+
     public function index()
     {
-        return Professor::all();
+        $professors = Professor::all();
+        return view('professor.index', compact('professors'));
     }
+
+// Mostrar el formulario de creación
+    public function create()
+    {
+        return view('professor.edit');
+    }
+
 
     public function store(Request $request)
     {
@@ -19,13 +27,27 @@ class ProfessorController extends Controller
             'specialization' => 'required|string|max:255',
         ]);
 
-        return Professor::create($validated);
+        // Crear un nuevo estudiante
+        $professor = new Professor();
+        $professor->name = $request->name;
+        $professor->specialization = $request->specialization;
+        $professor->save();
+
+        // Redirigir con mensaje de éxito
+        return redirect()->route('professors.index')->with('success', 'Profesor creado');
     }
 
-    public function show($id)
+
+    // Mostrar el formulario de edición
+    public function edit($id)
     {
-        return Professor::findOrFail($id);
+        // Buscar al profesor por su ID
+        $professor = Professor::findOrFail($id);
+        
+        // Pasar el profesor a la vista para que pueda ser editado
+        return view('professor.edit', compact('professor'));
     }
+
 
     public function update(Request $request, $id)
     {
@@ -45,7 +67,5 @@ class ProfessorController extends Controller
     {
         $professor = Professor::findOrFail($id);
         $professor->delete();
-
-        return response()->json(['message' => 'Professor deleted successfully']);
-    }
+        return redirect()->route('professors.index')->with('success', 'Profesor eliminado');}
 }
