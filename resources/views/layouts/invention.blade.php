@@ -100,7 +100,8 @@
         <a href="{{ route('courses.index') }}"><i class="fas fa-book me-2"></i>Cursos</a>
         <a href="{{ route('professors.index') }}"><i class="fas fa-chalkboard-teacher me-2"></i>Profesores</a>
         <a href="{{ route('subjects.index') }}"><i class="fas fa-book-open me-2"></i>Materias</a>
-        <a href="{{ route('commissions.index') }}"><i class="fas fa-users-class me-2"></i>Comisiones</a>
+        <a href="{{ route('commissions.index') }}"><i class="fas fa-user-friends me-2"></i>Comisiones</a>
+        <a href="{{ route('reports.index') }}"><i class="fas fa-chart-bar me-2"></i>Reportes</a>
     </div>
 
     <div class="contenido-principal">

@@ -8,6 +8,7 @@ use App\Models\Course;
 use App\Http\Controllers\CommissionController;
 use App\Http\Controllers\ProfessorController;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\ReportController;
 
 
 
@@ -247,5 +248,13 @@ Route::get('/update-student/{id}', function($id) {
             Route::get('/Q_EntreFechas', [App\Http\Controllers\consultasController::class, 'EntreFechas']);
             Route::get('/Q_NuevoEstudiante_Pedro', [App\Http\Controllers\consultasController::class, 'NuevoEstudiante_Pedro']);
             Route::get('/Q_FiltroEstudiantes_2', [App\Http\Controllers\consultasController::class, 'FiltroEstudiantes_2']);
+
+            Route::prefix('reports')->group(function () {
+                Route::get('/', [ReportController::class, 'index'])->name('reports.index');
+                Route::get('/students', [ReportController::class, 'students'])->name('reports.students');
+                Route::get('/courses', [ReportController::class, 'courses'])->name('reports.courses');
+                Route::get('/commissions', [ReportController::class, 'commissions'])->name('reports.commissions');
+                Route::get('/professors', [ReportController::class, 'professors'])->name('reports.professors');
+            });
 
            
