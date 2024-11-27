@@ -8,9 +8,17 @@ use App\Models\Commission;
 use App\Models\Professor;
 use App\Models\Subject;
 use Illuminate\Http\Request;
+use App\Services\ExportService;
 
 class ReportController extends Controller
 {
+    protected $exportService;
+
+    public function __construct(ExportService $exportService)
+    {
+        $this->exportService = $exportService;
+    }
+
     public function index()
     {
         return view('reports.index');
@@ -19,8 +27,8 @@ class ReportController extends Controller
     public function students()
     {
         $students = Student::with(['courses.subject', 'courses.commissions'])
-            ->get()
-            ->map(function ($student) {
+            ->paginate(10)
+            ->through(function ($student) {
                 return [
                     'id' => $student->id,
                     'name' => $student->name,
@@ -94,5 +102,29 @@ class ReportController extends Controller
             });
 
         return view('reports.professors', compact('professors'));
+    }
+
+    public function exportStudentsPdf()
+    {
+        $students = $this->getStudentsForExport();
+        return $this->exportService->toPdf(['students' => $students], 'reports.exports.students-pdf', 'estudiantes');
+    }
+
+    public function exportStudentsExcel()
+    {
+        $students = $this->getStudentsForExport();
+        return $this->exportService->toExcel($students, 'estudiantes');
+    }
+
+    private function getStudentsForExport()
+    {
+        return Student::with(['courses.subject', 'courses.commissions'])->get()
+            ->map(function ($student) {
+                return [
+                    'Nombre' => $student->name,
+                    'Email' => $student->email,
+                    'Cursos' => $student->courses->pluck('name')->implode(', ')
+                ];
+            });
     }
 }

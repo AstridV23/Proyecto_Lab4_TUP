@@ -255,6 +255,8 @@ Route::get('/update-student/{id}', function($id) {
                 Route::get('/courses', [ReportController::class, 'courses'])->name('reports.courses');
                 Route::get('/commissions', [ReportController::class, 'commissions'])->name('reports.commissions');
                 Route::get('/professors', [ReportController::class, 'professors'])->name('reports.professors');
+                Route::get('/students/pdf', [ReportController::class, 'exportStudentsPdf'])->name('reports.students.pdf');
+                Route::get('/students/excel', [ReportController::class, 'exportStudentsExcel'])->name('reports.students.excel');
             });
 
            

@@ -12,6 +12,17 @@
     </div>
 
     <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Reporte de Cursos por Materia</h5>
+            <div class="btn-group">
+                <button type="button" class="btn btn-light" data-bs-toggle="tooltip" title="Exportar a PDF">
+                    <i class="fas fa-file-pdf text-danger"></i>
+                </button>
+                <button type="button" class="btn btn-light" data-bs-toggle="tooltip" title="Exportar a Excel">
+                    <i class="fas fa-file-excel text-success"></i>
+                </button>
+            </div>
+        </div>
         <div class="card-body">
             @forelse ($subjects as $subject)
                 <div class="mb-4">

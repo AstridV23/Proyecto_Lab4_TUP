@@ -12,6 +12,17 @@
     </div>
 
     <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Reporte de Estudiantes</h5>
+            <div class="btn-group">
+                <a href="{{ route('reports.students.pdf') }}" class="btn btn-light" data-bs-toggle="tooltip" title="Exportar a PDF">
+                    <i class="fas fa-file-pdf text-danger"></i>
+                </a>
+                <a href="{{ route('reports.students.excel') }}" class="btn btn-light" data-bs-toggle="tooltip" title="Exportar a Excel">
+                    <i class="fas fa-file-excel text-success"></i>
+                </a>
+            </div>
+        </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table">
@@ -47,6 +58,14 @@
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    Mostrando {{ $students->firstItem() }} a {{ $students->lastItem() }} de {{ $students->total() }} registros
+                </div>
+                {{ $students->links() }}
             </div>
         </div>
     </div>
