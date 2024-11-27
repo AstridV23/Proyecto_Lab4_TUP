@@ -5,7 +5,22 @@
 @section('contenido')
 <h1>Listado de Estudiantes</h1>  
 <hr>
-<a href="{{ route('students.create') }}" class="btn btn-success">Agregar Estudiante</a>
+<div class="botones" style="
+    display: flex;
+    gap: 20px;
+    height: 30px;">
+    <a href="{{ route('students.create') }}" class="btn btn-success">NUEVO</a>
+    <form style="display:flex; gap: 20px">  
+        <div class="input-group input-group-sm mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-sm">Filtrar Nombre</span>
+            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <div class="input-group input-group-sm mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-sm">Filtrar Curso</span>
+            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+        </div>
+    </form>  
+</div>
 
 <table class="table table-striped">  
     <thead>  

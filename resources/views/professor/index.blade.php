@@ -5,13 +5,13 @@
 @section('contenido')
 <h1>Listado de Profesores</h1>  
 <hr>
-<a href="{{ route('professors.create') }}" class="btn btn-success">Agregar Profesor</a>
+<a href="{{ route('professors.create') }}" class="btn btn-success">NUEVO</a>
 
 <table class="table table-striped">  
     <thead>  
         <tr>  
             <th class="c1">Nombre</th>  
-            <th class="c2">Especializacion</th>  
+            <th class="c2">Comisiones</th>  
             <th class="c3">Acciones</th>  
         </tr>  
     </thead>  

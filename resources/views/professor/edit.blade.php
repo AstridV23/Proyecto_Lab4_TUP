@@ -17,7 +17,7 @@
     </div>
 
     <div class="form-group">
-        <label for="specialization">Especializacion</label>
+        <label for="specialization">Comisiones</label>
         <input type="text" name="specialization" class="form-control" value="{{ old('specialization', $professor->specialization ?? '') }}" required>
     </div>
 

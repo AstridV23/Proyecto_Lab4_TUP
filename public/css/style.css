@@ -28,6 +28,7 @@ form {
 #content {
     width: 778px;
     margin: 10px auto;
+    padding-top: 10px;
     border-radius: 10px;
 }
 
@@ -36,6 +37,7 @@ form {
     height: 80px;
     display: flex;
     flex-direction: column;
+    padding: 0 40px;
 }
 
 #logo {
@@ -102,11 +104,11 @@ form {
 }
 
 #mainimg {
-    width: 95vh;
     background-image: url(../images/main_img.jpg);
     background-repeat: no-repeat;
     height: 120px;
     text-align: right;
+    padding: 0 40px;
 }
 
 #mainimg h3 {
@@ -134,7 +136,7 @@ form {
 
 #leftbar {
     float: left;
-    width: 100vh;
+    width: 100%;
 }
 
 #leftbar {

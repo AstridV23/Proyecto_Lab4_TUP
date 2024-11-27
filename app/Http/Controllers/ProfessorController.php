@@ -53,14 +53,20 @@ class ProfessorController extends Controller
     {
         $professor = Professor::findOrFail($id);
 
-        $validated = $request->validate([
-            'name' => 'sometimes|string|max:255',
+        // Validación
+        $v = $request->validate([
+            'name' => 'required|string|max:255',
             'specialization' => 'sometimes|string|max:255',
         ]);
 
-        $professor->update($validated);
+         // Actualizar los datos del estudiante
+         $professor->update([
+            'name' => $request->name,
+            'specialization' => $request->specialization,
+        ]);
 
-        return $professor;
+        // Redirigir con mensaje de éxito
+        return redirect()->route('professors.index')->with('success', 'Profesor actualizado');
     }
 
     public function destroy($id)
