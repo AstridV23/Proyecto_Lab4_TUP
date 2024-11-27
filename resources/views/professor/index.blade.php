@@ -10,17 +10,17 @@
 <table class="table table-striped">  
     <thead>  
         <tr>  
-            <th class="c1">Nombre</th>  
-            <th class="c2">Comisiones</th>  
-            <th class="c3">Acciones</th>  
+            <th >Nombre</th>  
+            <th >Comisiones</th>  
+            <th class="p20">Acciones</th>  
         </tr>  
     </thead>  
     <tbody>  
         @foreach ($professors as $professor)  
             <tr>  
-                <td class="c1">{{ $professor->name }}</td>  
-                <td class="c2">{{ $professor->specialization }}</td>  
-                <td class="c2">  
+                <td >{{ $professor->name }}</td>  
+                <td >{{ $professor->specialization }}</td>  
+                <td class="p20">  
                     <a href="{{ route('professors.edit', $professor) }}" class="btn btn-warning">Editar</a>  
                     <form action="{{ route('professors.destroy', $professor) }}" method="POST" style="display:inline-block;">  
                         @csrf  

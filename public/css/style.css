@@ -275,9 +275,11 @@ form {
     font-weight: bolder;
 }
 
-#leftbar .table .c1,
-#leftbar .table .c2 {
-    width: 40%;
+#leftbar .table .p25 {
+    width: 25%;
+}
+#leftbar .table .p20 {
+    width: 20%;
 }
 
 /* Filas alternadas */

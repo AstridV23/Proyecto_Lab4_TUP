@@ -1,84 +1,67 @@
 <?php
-
 namespace App\Http\Controllers;
 
+use App\Models\Course;
+use App\Models\Subject;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        //
+        $courses = Course::with('subject')->get(); // Trae los cursos junto con la materia asociada
+        return view('course.index', compact('courses'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    // Mostrar el formulario de creación
     public function create()
-    {
-        //
-    }
+{
+    // Pasamos todas las materias disponibles para mostrarlas en el formulario de creación
+    $course = Course::all(); 
+    return view('course.edit');
+}
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    // Almacenar un nuevo curso
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'subject_id' => 'required|exists:subjects,id', // Validación para que la materia exista
+        ]);
+
+        Course::create($validated); // Crear el curso
+
+        return redirect()->route('courses.index')->with('success', 'Curso creado');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    // Mostrar el formulario de edición
     public function edit($id)
     {
-        //
+        $course = Course::findOrFail($id);
+        $subjects = Subject::all(); // Obtener todas las materias
+        return view('course.edit', compact('course', 'subjects'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    // Actualizar un curso
     public function update(Request $request, $id)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'subject_id' => 'required|exists:subjects,id',
+        ]);
+
+        $course = Course::findOrFail($id);
+        $course->update($validated);
+
+        return redirect()->route('courses.index')->with('success', 'Curso actualizado');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    // Eliminar un curso
     public function destroy($id)
     {
-        //
+        $course = Course::findOrFail($id);
+        $course->delete();
+
+        return redirect()->route('courses.index')->with('success', 'Curso eliminado');
     }
 }

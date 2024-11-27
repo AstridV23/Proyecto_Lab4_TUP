@@ -1,20 +1,34 @@
 <?php
 use App\Http\Controllers\ProfessorController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\CommissionController;
+use App\Http\Controllers\Course_StudentController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Student;
 use App\Models\Course;
+use App\Http\Controllers\HomeController;
 
-
-// Ruta de inicio
-Route::get('/', [StudentController::class, 'index'])->name('home');
+// Rutas para home
+Route::get('/', [HomeController::class, 'index']);
 
 // Rutas para profesores
 Route::resource('professors', ProfessorController::class);
 
 // Rutas para estudiantes
 Route::resource('students', StudentController::class);
+
+// Rutas para materias
+Route::resource('subjects', SubjectController::class);
+
+// Rutas para cursos
+Route::resource('courses', CourseController::class);
+
+// Rutas para comisiones
+Route::resource('commissions', CommissionController::class);
+
+
 
     Route::get('/create-student', function() {
         $student = new Student();

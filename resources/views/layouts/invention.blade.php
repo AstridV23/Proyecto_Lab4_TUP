@@ -17,12 +17,12 @@
         <h4>Laboratorio de Computacion 4</h4>
       </div>
       <div id="links">
-        <ul>
+        <ul> 
           <li><a href="{{ route('students.index') }}">Estudiantes</a></li>        
           <li><a href="{{ route('professors.index') }}">Profesores</a></li>  
-          <li><a href="{{ route('students.index') }}">Materias</a></li>    
-          <li><a href="{{ route('students.index') }}">Cursos</a></li>  
-          <li><a href="{{ route('students.index') }}">Comisiones</a></li>  
+          <li><a href="{{ route('subjects.index') }}">Materias</a></li>    
+          <li><a href="{{ route('courses.index') }}">Cursos</a></li>  
+          <li><a href="{{ route('commissions.index') }}">Comisiones</a></li>  
         </ul>
       </div>
     </div>
