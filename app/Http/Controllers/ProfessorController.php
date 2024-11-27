@@ -7,9 +7,22 @@ use Illuminate\Http\Request;
 
 class ProfessorController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Professor::all();
+        $query = Professor::query();
+
+        // Filtro por nombre
+        if ($request->filled('name')) {
+            $query->where('name', 'LIKE', '%' . $request->name . '%');
+        }
+
+        // Filtro por especialización
+        if ($request->filled('specialization')) {
+            $query->where('specialization', 'LIKE', '%' . $request->specialization . '%');
+        }
+
+        $professors = $query->paginate(10);
+        return view('professors.index', compact('professors'));
     }
 
     public function store(Request $request)

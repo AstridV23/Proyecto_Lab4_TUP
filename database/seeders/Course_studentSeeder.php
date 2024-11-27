@@ -15,21 +15,29 @@ class Course_studentSeeder extends Seeder
      */
     public function run()
     {
-        // Crear una instancia de Faker
-        $faker = Faker::create();
-
         // Obtener todos los IDs de estudiantes y cursos existentes
         $studentIds = \App\Models\Student::pluck('id')->toArray();
         $courseIds = \App\Models\Course::pluck('id')->toArray();
 
-        // Generar 100 registros aleatorios en la tabla course_student
-        for ($i = 0; $i < 100; $i++) {
-            DB::table('course_student')->insert([
-                'student_id' => $faker->randomElement($studentIds),
-                'course_id' => $faker->randomElement($courseIds),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+        // Para cada estudiante, asignar 1-3 cursos aleatorios
+        foreach ($studentIds as $studentId) {
+            // Seleccionar aleatoriamente entre 1 y 3 cursos para cada estudiante
+            $randomCourses = array_rand(array_flip($courseIds), rand(1, 3));
+            
+            // Si solo se seleccionó un curso, convertirlo en array
+            if (!is_array($randomCourses)) {
+                $randomCourses = [$randomCourses];
+            }
+
+            // Crear las relaciones
+            foreach ($randomCourses as $courseId) {
+                DB::table('course_student')->insert([
+                    'student_id' => $studentId,
+                    'course_id' => $courseId,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
         }
     }
 }

@@ -4,15 +4,46 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Student;
+use App\Models\Course;
 
 class StudentController extends Controller
 {
     //
-    public function index()
+    public function index(Request $request)
     {
-        $students = Student::all();
+        $query = Student::with('courses');
 
-        return view('student.index',compact('students'));
+        // Búsqueda global
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('name', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('email', 'LIKE', "%{$searchTerm}%")
+                  ->orWhereHas('courses', function($q) use ($searchTerm) {
+                      $q->where('name', 'LIKE', "%{$searchTerm}%");
+                  });
+            });
+        }
+
+        // Filtros específicos existentes
+        if ($request->filled('name')) {
+            $query->where('name', 'LIKE', '%' . $request->name . '%');
+        }
+
+        if ($request->filled('email')) {
+            $query->where('email', 'LIKE', '%' . $request->email . '%');
+        }
+
+        if ($request->filled('course_id')) {
+            $query->whereHas('courses', function($q) use ($request) {
+                $q->where('courses.id', $request->course_id);
+            });
+        }
+
+        $students = $query->paginate(10);
+        $courses = Course::all();
+
+        return view('student.index', compact('students', 'courses'));
     }
 
     //

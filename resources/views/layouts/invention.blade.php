@@ -1,64 +1,112 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="es">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>@yield('titulo')</title>
- <!-- Bootstrap 5 CSS -->
- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
- {{-- {{ asset('css/app.css') }} --}}
-<link href= {{ asset('css/style.css') }} rel="stylesheet" type="text/css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('titulo')</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            min-height: 100vh;
+            background-color: #f5f6f8;
+        }
+
+        .menu-lateral {
+            background-color: #2c3e50;
+            width: 250px;
+            padding: 1rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .contenido-principal {
+            flex: 1;
+            margin-left: 250px;
+            padding: 2rem;
+            min-height: 100vh;
+            background-color: #f5f6f8;
+        }
+
+        .menu-lateral h2 {
+            color: #fff;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .menu-lateral a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            display: block;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .menu-lateral a:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+
+        .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding: 1rem 1.5rem;
+        }
+
+        .form-control, .form-select {
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            padding: 0.6rem 1rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #2c3e50;
+            box-shadow: 0 0 0 0.2rem rgba(44,62,80,0.1);
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body>
-<div id="wrapper">
-  <div id="content">
-    <div id="header">
-      <div id="logo">
-        <h1>logo here</h1>
-        <h4>have your punchline here</h4>
-      </div>
-      <div id="links">
-        <ul>
-          <li><a href="{{ url('/blog') }}">Blog</a></li>
-          <li><a href="{{ route('students.index') }}">Estudiantes</a></li>          
-          <li><a href="{{ action([App\Http\Controllers\CalculationController::class, 'showForm']) }}">Cálculo</a></li>
-          <li><a href="{{ url('/contacto') }}">Contacto</a></li>
-        </ul>
-      </div>
+    <div class="menu-lateral">
+        <h2>Sistema Escolar</h2>
+        <a href="{{ route('students.index') }}"><i class="fas fa-users me-2"></i>Estudiantes</a>
+        <a href="{{ route('courses.index') }}"><i class="fas fa-book me-2"></i>Cursos</a>
+        <a href="{{ route('professors.index') }}"><i class="fas fa-chalkboard-teacher me-2"></i>Profesores</a>
+        <a href="{{ route('subjects.index') }}"><i class="fas fa-book-open me-2"></i>Materias</a>
+        <a href="{{ route('commissions.index') }}"><i class="fas fa-users-class me-2"></i>Comisiones</a>
     </div>
-    <div id="mainimg">
-      <h3>inventions</h3>
-      <h4>for a wireless world</h4>
-    </div>
-    <div id="contentarea">
-      <div id="leftbar">
+
+    <div class="contenido-principal">
         @yield('contenido')
-      </div>
-      <div id="rightbar">
-        
-        <h2>latest news</h2>
-        <p>
-          <a href="javascript:history.back()"> Volver </a> <br>
-          <a href="{{ url()->previous() }}">Regresar</a>
-         </p>
-        <p><span class="orangetext">12/08/2006</span><br />
-          Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Utid anisl nec leo congue fringilla. <br />
-          <br />
-          <span class="orangetext">10/08/2006</span><br />
-          Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Utid anisl nec leo congue fringilla. <br />
-          <br />
-          <span class="orangetext">28/07/2006</span><br />
-          Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Utid anisl nec leo congue fringilla. </p>
-      </div>
     </div>
-    <div id="bottom">
-      <div id="email"><a href="mailto:info@yourcompany.com">info@yourcompany.com</a></div>
-      <div id="validtext">
-        <p>Valid <a href="http://validator.w3.org/check?uri=referer">XHTML</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a></p>
-      </div>
-    </div>
-  </div>
-</div>
- <!-- Bootstrap 5 JS -->
- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
