@@ -9,6 +9,7 @@ use App\Models\Professor;
 use App\Models\Subject;
 use Illuminate\Http\Request;
 use App\Services\ExportService;
+use Shuchkin\SimpleXLSXGen;
 
 class ReportController extends Controller
 {
@@ -110,11 +111,51 @@ class ReportController extends Controller
         return $this->exportService->toPdf(['students' => $students], 'reports.exports.students-pdf', 'estudiantes');
     }
 
-    public function exportStudentsExcel()
-    {
-        $students = $this->getStudentsForExport();
-        return $this->exportService->toExcel($students, 'estudiantes');
+
+public function exportStudentsExcel()
+{
+    // Obtener los estudiantes
+    $students = Student::select('id', 'nombre', 'email')->get();
+
+    // Preparar los datos con los encabezados
+    $data = [
+        ['ID', 'Nombre', 'Correo'], // Encabezados
+    ];
+
+    // Agregar los datos de los estudiantes
+    foreach ($students as $student) {
+        $data[] = [$student->id, $student->nombre, $student->email];
     }
+
+    // Generar el archivo Excel
+    $xlsx = SimpleXLSXGen::fromArray($data);
+
+    // Descargar el archivo Excel
+    return $xlsx->downloadAs('estudiantes.xlsx');
+}
+
+public function exportStudentsHTML()
+{
+    $students = \App\Models\Student::all();
+
+    $output = '<table border="1">';
+    $output .= '<tr><th>ID</th><th>Nombre</th><th>Email</th></tr>';
+
+    foreach ($students as $student) {
+        $output .= '<tr>';
+        $output .= "<td>{$student->id}</td>";
+        $output .= "<td>{$student->nombre}</td>";
+        $output .= "<td>{$student->email}</td>";
+        $output .= '</tr>';
+    }
+
+    $output .= '</table>';
+
+    header('Content-Type: application/vnd.ms-excel');
+    header('Content-Disposition: attachment; filename="estudiantes.xls"');
+    echo $output;
+    exit;
+}
 
     private function getStudentsForExport()
     {
