@@ -108,23 +108,23 @@ class ReportController extends Controller
     public function exportStudentsPdf()
     {
         $students = $this->getStudentsForExport();
-        return $this->exportService->toPdf(['students' => $students], 'reports.exports.students-pdf', 'estudiantes');
+        return $this->exportService->toPdf(['students' => $students], 'reports.exports.students-pdf', 'students');
     }
 
 
 public function exportStudentsExcel()
 {
     // Obtener los estudiantes
-    $students = Student::select('id', 'nombre', 'email')->get();
+    $students = Student::select('id', 'name', 'email', 'created_at', 'updated_at')->get();
 
     // Preparar los datos con los encabezados
     $data = [
-        ['ID', 'Nombre', 'Correo'], // Encabezados
+        ['ID', 'Nombre', 'Correo', 'Creado el', 'Actualizado el'], // Encabezados
     ];
 
     // Agregar los datos de los estudiantes
     foreach ($students as $student) {
-        $data[] = [$student->id, $student->nombre, $student->email];
+        $data[] = [$student->id, $student->name, $student->email, $student->created_at, $student->updated_at];
     }
 
     // Generar el archivo Excel
@@ -146,6 +146,8 @@ public function exportStudentsHTML()
         $output .= "<td>{$student->id}</td>";
         $output .= "<td>{$student->nombre}</td>";
         $output .= "<td>{$student->email}</td>";
+        $output .= "<td>{$student->created_at}</td>";
+        $output .= "<td>{$student->updated_at}</td>";
         $output .= '</tr>';
     }
 
@@ -167,5 +169,11 @@ public function exportStudentsHTML()
                     'Cursos' => $student->courses->pluck('name')->implode(', ')
                 ];
             });
+    }
+
+    public function exportCoursesPdf()
+    {
+        $courses = $this->getCoursesForExport();
+        return $this->exportService->toPdf(['students' => $courses], 'reports.exports.courses-pdf', 'curso');
     }
 }

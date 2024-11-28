@@ -16,10 +16,4 @@ class ExportService
         $pdf->render();
         return $pdf->stream($filename . '.pdf');
     }
-
-    public function toExcel($data, $filename)
-    {
-        $headings = array_keys(reset($data));
-        return Excel::download(new GenericExport($data, $headings), $filename . '.xlsx');
-    }
 }
