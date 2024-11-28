@@ -1,32 +1,28 @@
 <?php
+
 namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Faker\Factory as Faker;
+use App\Models\Course;
+use App\Models\Subject;
 
 class CoursesTableSeeder extends Seeder
 {
-public function run()
-{
-    /*
-DB::table('courses')->insert([
-['name' => 'Physics 101', 'subject_id' => 2],
-['name' => 'Chemistry 101', 'subject_id' => 3],
-]);
-}*/
+    public function run()
+    {
+        $faker = Faker::create();
+        $subjects = Subject::all();
 
-    $faker = Faker::create();
-    // Supongamos que ya tienes materias en la tabla `subjects`
-    $subjectIds = DB::table('subjects')->pluck('id');
-            foreach (range(1, 20) as $index) { // Genera 20 cursos
-            DB::table('courses')->insert([
-            'name' => $faker->word . ' ' . $faker->randomNumber(3),
-            'subject_id' => $faker->randomElement($subjectIds), // Asigna un ID de `subject` aleatorio
-            'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
-            'updated_at' => now(),
-            ]);
+        foreach ($subjects as $subject) {
+            for ($i = 0; $i < 3; $i++) {
+                Course::create([
+                    'name' => $subject->name . ' - Curso ' . ($i + 1),
+                    'subject_id' => $subject->id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
             }
         }
-
-
+    }
 }

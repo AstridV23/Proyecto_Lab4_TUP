@@ -17,29 +17,39 @@ class CommissionsTableSeeder extends Seeder
      */
     public function run()
     {
-        // Crear una instancia de Faker
         $faker = Faker::create();
-
-        // Obtener los IDs existentes de Course y Professor para crear relaciones válidas
         $courseIds = Course::pluck('id')->toArray();
         $professorIds = Professor::pluck('id')->toArray();
 
-        // Asegurarse de que haya datos en las tablas relacionadas
         if (empty($courseIds) || empty($professorIds)) {
-            $this->command->error('Se necesitan registros en las tablas "courses" y "professors" para poblar "commissions".');
+            $this->command->error('Se necesitan registros en las tablas "courses" y "professors".');
             return;
         }
 
-        // Crear registros de comisión
         for ($i = 0; $i < 50; $i++) {
-            DB::table('commissions')->insert([
+            // Crear la comisión
+            $commissionId = DB::table('commissions')->insertGetId([
                 'aula' => 'Aula ' . $faker->numberBetween(1, 100),
                 'horario' => $faker->time('H:i') . ' - ' . $faker->time('H:i'),
                 'course_id' => $faker->randomElement($courseIds),
-                'professor_id' => $faker->randomElement($professorIds),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
+
+            // Asignar 1-3 profesores aleatorios a la comisión
+            $randomProfessors = array_rand(array_flip($professorIds), rand(1, 3));
+            if (!is_array($randomProfessors)) {
+                $randomProfessors = [$randomProfessors];
+            }
+
+            foreach ($randomProfessors as $professorId) {
+                DB::table('commission_professor')->insert([
+                    'commission_id' => $commissionId,
+                    'professor_id' => $professorId,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
         }
     }
 }

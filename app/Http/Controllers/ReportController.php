@@ -9,6 +9,8 @@ use App\Models\Professor;
 use App\Models\Subject;
 use Illuminate\Http\Request;
 use App\Services\ExportService;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\GenericExport;
 
 class ReportController extends Controller
 {
@@ -112,8 +114,8 @@ class ReportController extends Controller
 
     public function exportStudentsExcel()
     {
-        $students = $this->getStudentsForExport();
-        return $this->exportService->toExcel($students, 'estudiantes');
+        $students = $this->getStudentsForExport()->toArray();
+        return Excel::download(new GenericExport($students), 'estudiantes.xlsx');
     }
 
     private function getStudentsForExport()
