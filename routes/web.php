@@ -169,6 +169,10 @@ Route::get('/update-student/{id}', function($id) {
             Route::get('/Q_FiltroEstudiantes_2', [App\Http\Controllers\consultasController::class, 'FiltroEstudiantes_2']);
 
             Route::resource('commissions', CommissionController::class);
+            Route::get('commissions/{commission}/assign-professor', [CommissionController::class, 'showAssignProfessor'])
+                ->name('commissions.assign-professor');
+            Route::post('commissions/{commission}/assign-professor', [CommissionController::class, 'assignProfessor'])
+                ->name('commissions.assign-professor.store');
 
 
 
@@ -258,6 +262,12 @@ Route::get('/update-student/{id}', function($id) {
                 Route::get('/students/pdf', [ReportController::class, 'exportStudentsPdf'])->name('reports.students.pdf');
                 Route::get('/reports/students/excel', [ReportController::class, 'exportStudentsExcel'])->name('reports.students.excel');
                 Route::get('/courses/pdf', [ReportController::class, 'exportCoursesPdf'])->name('reports.courses.pdf');
+                Route::get('/reports/courses/pdf', [ReportController::class, 'exportCoursesPdf'])->name('reports.courses.pdf');
+                Route::get('/reports/courses/excel', [ReportController::class, 'exportCoursesExcel'])->name('reports.courses.excel');
+                Route::get('/reports/commissions/pdf', [ReportController::class, 'exportCommissionsPdf'])->name('reports.commissions.pdf');
+                Route::get('/reports/commissions/excel', [ReportController::class, 'exportCommissionsExcel'])->name('reports.commissions.excel');
+                Route::get('/reports/professors/pdf', [ReportController::class, 'exportProfessorsPdf'])->name('reports.professors.pdf');
+                Route::get('/reports/professors/excel', [ReportController::class, 'exportProfessorsExcel'])->name('reports.professors.excel');
             });
 
            

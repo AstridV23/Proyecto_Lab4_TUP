@@ -69,14 +69,14 @@ class ReportController extends Controller
     public function commissions()
     {
         $commissions = Commission::with(['course.subject', 'professors'])
-            ->get()
-            ->map(function ($commission) {
+            ->paginate(10)
+            ->through(function ($commission) {
                 return [
                     'id' => $commission->id,
+                    'subject' => $commission->course->subject->name,
+                    'course' => $commission->course->name,
                     'classroom' => $commission->classroom,
                     'schedule' => $commission->schedule,
-                    'course' => $commission->course->name,
-                    'subject' => $commission->course->subject->name,
                     'professors' => $commission->professors->pluck('name')
                 ];
             });
@@ -86,22 +86,10 @@ class ReportController extends Controller
 
     public function professors()
     {
-        $professors = Professor::with('commissions.course')
-            ->get()
-            ->map(function ($professor) {
-                return [
-                    'id' => $professor->id,
-                    'name' => $professor->name,
-                    'commissions' => $professor->commissions->map(function ($commission) {
-                        return [
-                            'name' => $commission->name,
-                            'course' => $commission->course->name,
-                            'schedule' => $commission->schedule
-                        ];
-                    })
-                ];
-            });
-
+        $professors = Professor::with(['commissions.course'])
+            ->orderBy('name')
+            ->paginate(10);
+        
         return view('reports.professors', compact('professors'));
     }
 
@@ -173,7 +161,153 @@ public function exportStudentsHTML()
 
     public function exportCoursesPdf()
     {
-        $courses = $this->getCoursesForExport();
-        return $this->exportService->toPdf(['students' => $courses], 'reports.exports.courses-pdf', 'curso');
+        $subjects = $this->getCoursesForExport();
+        return $this->exportService->toPdf(['subjects' => $subjects], 'reports.exports.courses-pdf', 'cursos-por-materia');
     }
+
+    public function exportCoursesExcel()
+    {
+        $subjects = Subject::with(['courses' => function($query) {
+            $query->withCount(['commissions', 'students']);
+        }])->get();
+
+        $data = [
+            ['Materia', 'Curso', 'Cantidad de Comisiones', 'Cantidad de Estudiantes']
+        ];
+
+        foreach ($subjects as $subject) {
+            foreach ($subject->courses as $course) {
+                $data[] = [
+                    $subject->name,
+                    $course->name,
+                    $course->commissions_count,
+                    $course->students_count
+                ];
+            }
+        }
+
+        $xlsx = SimpleXLSXGen::fromArray($data);
+        return $xlsx->downloadAs('cursos-por-materia.xlsx');
+    }
+
+    private function getCoursesForExport()
+    {
+        return Subject::with(['courses' => function($query) {
+            $query->withCount(['commissions', 'students']);
+        }])->get()->map(function ($subject) {
+            return [
+                'name' => $subject->name,
+                'courses' => $subject->courses->map(function ($course) {
+                    return [
+                        'name' => $course->name,
+                        'commissions_count' => $course->commissions_count,
+                        'students_count' => $course->students_count
+                    ];
+                })
+            ];
+        });
+    }
+
+    public function exportCommissionsPdf()
+    {
+        $commissions = $this->getCommissionsForExport();
+        return $this->exportService->toPdf(
+            ['commissions' => $commissions], 
+            'reports.exports.commissions-pdf', 
+            'comisiones'
+        );
+    }
+
+    public function exportCommissionsExcel()
+    {
+        $commissions = Commission::with(['course.subject', 'professors'])->get();
+        
+        $data = [
+            ['Materia', 'Curso', 'Aula', 'Horario', 'Profesores']
+        ];
+
+        foreach ($commissions as $commission) {
+            $data[] = [
+                $commission->course->subject->name,
+                $commission->course->name,
+                $commission->classroom,
+                $commission->schedule,
+                $commission->professors->pluck('name')->implode(', ')
+            ];
+        }
+
+        $xlsx = SimpleXLSXGen::fromArray($data);
+        return $xlsx->downloadAs('comisiones.xlsx');
+    }
+
+    private function getCommissionsForExport()
+    {
+        return Commission::with(['course.subject', 'professors'])->get()
+            ->map(function ($commission) {
+                return [
+                    'Materia' => $commission->course->subject->name,
+                    'Curso' => $commission->course->name,
+                    'Aula' => $commission->classroom,
+                    'Horario' => $commission->schedule,
+                    'Profesores' => $commission->professors->pluck('name')->implode(', ')
+                ];
+            });
+    }
+
+    public function exportProfessorsPdf()
+    {
+        $professors = Professor::with(['commissions.course'])
+            ->get()
+            ->map(function ($professor) {
+                $horarios = $professor->commissions->map(function ($commission) {
+                    return $commission->schedule;
+                })->unique()->implode("\n");
+
+                return [
+                    'Profesor' => $professor->name,
+                    'Email' => $professor->email,
+                    'Comisiones' => $professor->commissions->map(function ($commission) {
+                        return $commission->course->name;
+                    })->unique()->implode(', '),
+                    'Horarios' => $horarios,
+                    'Estado' => 'Activo'
+                ];
+            });
+
+        return $this->exportService->toPdf(
+            ['professors' => $professors], 
+            'reports.exports.professors-pdf', 
+            'profesores'
+        );
+    }
+
+    public function exportProfessorsExcel()
+    {
+        $professors = $this->getProfessorsForExport();
+        
+        $data = [
+            ['Profesor', 'Email', 'Comisiones', 'Horarios', 'Estado']
+        ];
+
+        foreach ($professors as $professor) {
+            $data[] = [
+                $professor->name,
+                $professor->email,
+                $professor->commissions->pluck('course.name')->implode(', '),
+                $professor->commissions->pluck('schedule')->implode(', '),
+                'Activo'
+            ];
+        }
+
+        $xlsx = SimpleXLSXGen::fromArray($data);
+        return $xlsx->downloadAs('profesores.xlsx');
+    }
+
+    private function getProfessorsForExport()
+    {
+        return Professor::with(['commissions.course'])
+            ->orderBy('name')
+            ->get();
+    }
+
 }

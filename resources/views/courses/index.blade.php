@@ -6,7 +6,17 @@
 <div class="container-fluid px-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3">Gestión de Cursos</h1>
+        <a href="{{ route('courses.create') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Nuevo Curso
+        </a>
     </div>
+
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 
     <div class="card mb-4">
         <div class="card-header">

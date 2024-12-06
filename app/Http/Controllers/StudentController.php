@@ -49,52 +49,61 @@ class StudentController extends Controller
     //
     public function create()
     {
-        return view('student.edit');
+        $courses = Course::orderBy('name')->get();
+        return view('student.edit', compact('courses'));
     }
 
     //
-    public function store(Request $request){
-      
-      //dd($request->name .' email    '.$request->email);
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:students,email',
+            'course_id' => 'required|exists:courses,id'
+        ]);
 
-      $v= $request->validate(
-        ['name'=>'required|string|max:255',
-         'email'=>'required|email|unique:students,email,']
-      );
-        $student = new Student();
-        $student->name = $request->name; 
-        $student->email = $request->email;      
-        $student->course_id =$request->course_id;
-        $student->save();
+        $student = Student::create([
+            'name' => $validated['name'],
+            'email' => $validated['email']
+        ]);
 
-    
-    
-        return redirect()->route('students.index')->with('success','Estudiante creado');
+        // Asociar el estudiante con el curso
+        $student->courses()->attach($validated['course_id']);
 
-
-
-
+        return redirect()
+            ->route('students.index')
+            ->with('success', 'Estudiante creado exitosamente');
     }
 
     public function edit($id)
     {
-        $student = Student::find($id);
-        return view('student.edit',compact('student'));
+        $student = Student::with('courses')->findOrFail($id);
+        $courses = Course::orderBy('name')->get();
+        $currentCourseId = $student->courses->first()->id ?? null;
+        
+        return view('student.edit', compact('student', 'courses', 'currentCourseId'));
     }
 
     //
-    public function update(Request $request, Student $student){
+    public function update(Request $request, Student $student)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:students,email,' . $student->id,
+            'course_id' => 'required|exists:courses,id'
+        ]);
 
-        //dd($request->course_id);
-        $v= $request->validate(
-            ['name'=>'required|string|max:255',
-            'email'=>'required|email|unique:students,email,'.$student->id, 
-            'course_id'=>'required']
-        );
+        $student->update([
+            'name' => $validated['name'],
+            'email' => $validated['email']
+        ]);
 
-        $student->update($v);
-        
-        return redirect()->route('students.index')->with('success','Estudiante acctualizado');
+        // Sincronizar el curso (esto eliminará otros cursos y dejará solo el seleccionado)
+        $student->courses()->sync([$validated['course_id']]);
+
+        return redirect()
+            ->route('students.index')
+            ->with('success', 'Estudiante actualizado exitosamente');
     }
 
     public function show(Student $student)

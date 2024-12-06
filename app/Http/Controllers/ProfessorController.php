@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Professor;
+use App\Models\Commission;
 use Illuminate\Http\Request;
 
 class ProfessorController extends Controller
@@ -32,26 +33,44 @@ class ProfessorController extends Controller
             'specialization' => 'required|string|max:255',
         ]);
 
-        return Professor::create($validated);
+        Professor::create($validated);
+
+        return redirect()
+            ->route('professors.index')
+            ->with('success', 'Profesor creado exitosamente');
     }
 
-    public function show($id)
+    public function show(Professor $professor)
     {
-        return Professor::findOrFail($id);
+        return view('professors.show', compact('professor'));
     }
 
-    public function update(Request $request, $id)
+    public function edit(Professor $professor)
     {
-        $professor = Professor::findOrFail($id);
+        $commissions = Commission::with('course')->get();
+        return view('professors.edit', compact('professor', 'commissions'));
+    }
 
+    public function update(Request $request, Professor $professor)
+    {
         $validated = $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'specialization' => 'sometimes|string|max:255',
+            'name' => 'required|string|max:255',
+            'specialization' => 'required|string|max:255',
+            'commissions' => 'array'
         ]);
 
-        $professor->update($validated);
+        $professor->update([
+            'name' => $validated['name'],
+            'specialization' => $validated['specialization']
+        ]);
 
-        return $professor;
+        if (isset($validated['commissions'])) {
+            $professor->commissions()->sync($validated['commissions']);
+        }
+
+        return redirect()
+            ->route('professors.index')
+            ->with('success', 'Profesor actualizado exitosamente');
     }
 
     public function destroy($id)
@@ -60,5 +79,10 @@ class ProfessorController extends Controller
         $professor->delete();
 
         return response()->json(['message' => 'Professor deleted successfully']);
+    }
+
+    public function create()
+    {
+        return view('professors.create');
     }
 }

@@ -6,26 +6,23 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Reporte de Comisiones y Horarios</h2>
-        <a href="{{ route('reports.index') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left me-2"></i>Volver
-        </a>
+        <div class="btn-group">
+            <a href="{{ route('reports.commissions.pdf') }}" class="btn btn-outline-danger" title="Exportar a PDF">
+                <i class="fas fa-file-pdf"></i>
+            </a>
+            <a href="{{ route('reports.commissions.excel') }}" class="btn btn-outline-success" title="Exportar a Excel">
+                <i class="fas fa-file-excel"></i>
+            </a>
+            <a href="{{ route('reports.index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+        </div>
     </div>
 
     <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Reporte de Comisiones</h5>
-            <div class="btn-group">
-                <button type="button" class="btn btn-light" data-bs-toggle="tooltip" title="Exportar a PDF">
-                    <i class="fas fa-file-pdf text-danger"></i>
-                </button>
-                <button type="button" class="btn btn-light" data-bs-toggle="tooltip" title="Exportar a Excel">
-                    <i class="fas fa-file-excel text-success"></i>
-                </button>
-            </div>
-        </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table">
+                <table class="table table-hover">
                     <thead>
                         <tr>
                             <th>Materia</th>
@@ -44,9 +41,11 @@
                                 <td>{{ $commission['schedule'] }}</td>
                                 <td>
                                     @forelse ($commission['professors'] as $professor)
-                                        <div>{{ $professor }}</div>
+                                        <span class="badge bg-info me-1">
+                                            {{ $professor }}
+                                        </span>
                                     @empty
-                                        <span class="text-muted">Sin profesores asignados</span>
+                                        <span class="badge bg-secondary">Sin profesores</span>
                                     @endforelse
                                 </td>
                             </tr>
@@ -58,6 +57,29 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+        <div class="card-footer">
+            <ul class="pagination justify-content-end mb-0">
+                @if($commissions->onFirstPage())
+                    <li class="page-item disabled">
+                        <span class="page-link">Anterior</span>
+                    </li>
+                @else
+                    <li class="page-item">
+                        <a class="page-link" href="{{ $commissions->previousPageUrl() }}">Anterior</a>
+                    </li>
+                @endif
+
+                @if($commissions->hasMorePages())
+                    <li class="page-item">
+                        <a class="page-link" href="{{ $commissions->nextPageUrl() }}">Siguiente</a>
+                    </li>
+                @else
+                    <li class="page-item disabled">
+                        <span class="page-link">Siguiente</span>
+                    </li>
+                @endif
+            </ul>
         </div>
     </div>
 </div>
