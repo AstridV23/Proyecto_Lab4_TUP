@@ -24,3 +24,6 @@
 - Luego, entramos en el directorio creado a través de la consola e ingresamos el comando "composer install".
 - El siguiente comando a utilizar es "php artisan migrate".
 - Por ultimo, escribimos "php artisan serve"
+
+## Link al video de presentacion
+https://youtu.be/qNjYltBUOnk
